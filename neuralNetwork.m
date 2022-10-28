@@ -33,3 +33,13 @@ for n=1:size(q2t,1)-1
 end
 
 q=[q2u q3u q4u];%expected output
+
+%use FK to get end effector positions
+T0E=forwardKinematics(6);
+
+syms theta1 theta2 theta3 theta4 theta5;
+%Replace angles in FK by those defined above
+%to get input for neural network
+xt=double(subs(T0E(1,1),{theta1 theta2 theta3 theta4 theta5},{-90 q2u q3u q4u 0}));
+yt=double(subs(T0E(1,2),{theta1 theta2 theta3 theta4 theta5},{-90 q2u q3u q4u 0}));
+zt=double(subs(T0E(1,3),{theta1 theta2 theta3 theta4 theta5},{-90 q2u q3u q4u 0}));
