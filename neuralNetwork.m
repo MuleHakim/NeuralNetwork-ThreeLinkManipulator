@@ -43,3 +43,5 @@ syms theta1 theta2 theta3 theta4 theta5;
 xt=double(subs(T0E(1,1),{theta1 theta2 theta3 theta4 theta5},{-90 q2u q3u q4u 0}));
 yt=double(subs(T0E(1,2),{theta1 theta2 theta3 theta4 theta5},{-90 q2u q3u q4u 0}));
 zt=double(subs(T0E(1,3),{theta1 theta2 theta3 theta4 theta5},{-90 q2u q3u q4u 0}));
+
+i=[xt yt zt];%input values for neural network
