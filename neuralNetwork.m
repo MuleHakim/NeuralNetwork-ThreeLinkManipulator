@@ -106,3 +106,38 @@ while(co~=size(q,1))%iterate however many times specified by input
 end
 
 disp('Training Complete')
+
+%% Testing Network
+%store difference between output and expected output
+
+%get values used in assignment
+
+%angles used in assignment for testing
+co=1;%counter
+MSE_q2=0;%mean squared error intialised
+MSE_q3=0;%mean squared error intialised
+MSE_q4=0;%mean squared error intialised
+
+q2 = [40 90 45 40 45 20 30 45 90 45 ]'*pi/180;
+q3 = [-20 -70 -45 -50 -47 -60 -50 -45 -70 -20 ]'*pi/180;
+q4 = [20 5 10 0 10 -40 0 10 5 20]'*pi/180;
+
+%retrieve x,y,z for q2,q3,q4
+q2u=[];
+q3u=[];
+q4u=[];
+%get set of input from cubic trajectory for q2,q3,q4 
+%with EE positions from FK
+%lock q1 at -90
+for n=1:size(q2,1)-1
+    q2s=returnPVA(q2(n,1),q2(n+1,1),3);
+    q2u=vertcat(q2u,q2s(:,1));
+    
+    q3s=returnPVA(q3(n,1),q3(n+1,1),3);
+    q3u=vertcat(q3u,q3s(:,1));
+    
+    q4s=returnPVA(q4(n,1),q4(n+1,1),3);
+    q4u=vertcat(q4u,q4s(:,1));
+end
+
+q=[q2u q3u q4u];%expected output
