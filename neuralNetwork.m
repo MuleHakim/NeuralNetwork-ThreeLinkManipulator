@@ -141,3 +141,45 @@ for n=1:size(q2,1)-1
 end
 
 q=[q2u q3u q4u];%expected output
+%use FK to get end effector positions
+T0E=forwardKinematics(6);
+
+syms theta1 theta2 theta3 theta4 theta5;
+%Replace angles in FK by those defined above
+%to get input for neural network
+xt=double(subs(T0E(1,1),{theta1 theta2 theta3 theta4 theta5},{-90 q2u q3u q4u 0}));
+yt=double(subs(T0E(1,2),{theta1 theta2 theta3 theta4 theta5},{-90 q2u q3u q4u 0}));
+zt=double(subs(T0E(1,3),{theta1 theta2 theta3 theta4 theta5},{-90 q2u q3u q4u 0}));
+
+i=[xt yt zt];%input values for neural network
+%while loop. 
+while(co~=size(q,1))%iterate 
+   net(1,1)=i(co,1);
+   net(2,1)=i(co,2);
+   net(3,1)=i(co,3);
+
+    %feedforward
+    for m=1:size(net,2)%rows
+       for n=1:size(net,1)%columns
+           if(m==2)%if hidden layer
+               w1=[w(n,m-1) w(n+3,m-1) w(n+6,m-1)]';%3,6,9
+               a=sum((net(:,1).*w1))+b1;%activation this neuron equals sum(w*i)+b
+               net(n,m)=1/(1+exp(-a));%neuron equals output
+               
+           elseif(m==3)% if output layer
+               w2=[w(n,m-1) w(n+3,m-1) w(n+6,m-1)]';
+               a=sum(net(:,2).*w2)+b2;%activation - takes output from hidden layer as input
+               net(n,m)=1/(1+exp(-a));%store sigmoid in network
+           end
+       end
+    end
+   %compare output values by MSE
+    MSE_q2=MSE_q2+(q(co,1)-net(1,3))^2;%(q2-q2')^2
+    MSE_q3=MSE_q3+(q(co,2)-net(2,3))^2;
+    MSE_q4=MSE_q4+(q(co,3)-net(3,3))^2;
+   
+   co=co+1;%increment counter 
+end
+    MSE_q2=(1/size(q,1)*MSE_q2)
+    MSE_q3=(1/size(q,1)*MSE_q3)
+    MSE_q4=(1/size(q,1)*MSE_q4)
