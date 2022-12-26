@@ -183,3 +183,5 @@ end
     MSE_q2=(1/size(q,1)*MSE_q2)
     MSE_q3=(1/size(q,1)*MSE_q3)
     MSE_q4=(1/size(q,1)*MSE_q4)
+
+disp('Testing Complete')
