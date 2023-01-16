@@ -23,6 +23,20 @@ alpha = [t1, t2, t3];
 
 % Create transformation matrices for each link
 T1 = DH(q1, d(1), a(1), alpha(1));
+T2 = DH(q2, d(2), a(2), alpha(2));
+T3 = DH(q3, d(3), a(3), alpha(3));
+
+% Calculate forward kinematics
+T = T1*T2*T3;
+
+% Visualize the manipulator in 3D
+x = [0, T1(1, 4), T(1, 4)];
+y = [0, T1(2, 4), T(2, 4)];
+z = [0, T1(3, 4), T(3, 4)];
+plot3(x, y, z, '-o')
+xlabel('X')
+ylabel('Y')
+zlabel('Z')
 
 % DH function
 function T = DH(q, d, a, alpha)
